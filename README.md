@@ -1,36 +1,45 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Seat Reservation System
 
-## Getting Started
+This project is a practical assignment for an Object-Oriented Programming (C++) course. Its primary objective is to integrate a C++ algorithm into a modern web application using WebAssembly technology. The current stage of the project includes a fully prepared infrastructure and user interface, ready for the upcoming algorithm deployment.
 
-First, run the development server:
+## Technical Architecture
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+* **User Interface:** Built with the Next.js framework and deployed on the Vercel platform. The initial component structure and base data were generated using the v0 tool.
+* **Data Management:** The Supabase platform is utilized as a PostgreSQL database. Real-time functionality ensures instantaneous seat status updates across different clients.
+* **Security:** Requests are handled via RPC (Remote Procedure Call) functions with a Row-Level Locking mechanism to prevent race conditions and double bookings.
+* **Computation Layer:** A best-seat search algorithm written in C++ (currently in development).
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Functionality
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+* **Seat Viewing and Reservation:** An interactive arena map allows users to select and reserve seats.
+* **User Data:** Contact information (email and phone number) is collected during reservation. The system does not perform user authentication, and data validation is limited to basic email syntax checking (@ symbol), consistent with the requirements of an academic prototype.
+* **Best Seat Selection:** Currently, a TypeScript code simulation is active. In the final version, this part will be replaced by the C++ algorithm compiled into WebAssembly (WASM).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Project Goal and C++ Integration
 
-## Learn More
+The main focus of this project is to demonstrate the application of Object-Oriented Programming principles in C++ to solve optimization problems (seat grouping, best visibility calculations).
 
-To learn more about Next.js, take a look at the following resources:
+The current result serves as systemic preparation:
+1. Preparation of data structures (JSON format between JS and C++).
+2. Ensuring stability of backend transactions.
+3. Creation of a frontend logical pipeline into which the WASM module will be inserted.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Setup
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Install dependencies:
+   ```bash
+   npm install
 
-## Deploy on Vercel
+2. Configure environment variables in .env.local:
+   ```bash
+   NEXT_PUBLIC_SUPABASE_URL
+   NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+3. Generate production build:
+   ```bash
+   npm run dev
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+4. Generate production build:
+   ```bash
+   npm run build
+   
