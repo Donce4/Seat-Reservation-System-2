@@ -137,11 +137,11 @@ export function createInitialSectors(): Sector[] {
 export const eventInfo: EventInfo = {
   id: '1',
   name: 'Krepšinio rungtynės',
-  date: '2024-03-15',
-  time: '19:00',
+  date: '2026-05-08',
+  time: '20:00',
   venue: 'Žalgirio Arena',
-  description: 'Eurolyga - Žalgiris vs Barcelona',
-};
+  description: 'Eurolygos ketvirtfinalis — Žalgiris vs Fenerbahçe',
+}
 
 // Ticket summary for sidebar
 export interface TicketSummary {

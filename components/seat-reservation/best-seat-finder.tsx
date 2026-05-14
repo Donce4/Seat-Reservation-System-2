@@ -24,7 +24,7 @@ export function BestSeatFinder() {
       <CardHeader className="pb-3">
         <CardTitle className="text-lg flex items-center gap-2">
           <Sparkles className="h-5 w-5 text-primary" />
-          Geriausio vietos paieška
+          Geriausių vietų paieška
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -93,10 +93,6 @@ export function BestSeatFinder() {
             </>
           )}
         </Button>
-
-        <p className="text-xs text-muted-foreground text-center">
-          * Optimizuota WebAssembly technologija
-        </p>
       </CardContent>
     </Card>
   );
