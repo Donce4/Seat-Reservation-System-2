@@ -19,7 +19,7 @@ interface SeatingContextType extends SeatingState {
   clearSelection: () => void;
   setSelectedSector: (sector: Sector | null) => void;
   setView: (view: SeatingState['view']) => void;
-  reserveSeats: (seatIds: string[]) => Promise<void>;
+  reserveSeats: (seatIds: string[], email: string, phone: string) => Promise<void>;
   handleFindBestSeats: (criteria: BestSeatCriteria, groupSize?: number) => Promise<void>;
   getTotalPrice: () => number;
   getSeatById: (seatId: string) => Seat | undefined;
@@ -263,21 +263,18 @@ export function SeatingProvider({ children }: { children: React.ReactNode }) {
 
   // SUPABASE INTEGRATION - Reserve Seats
   // SUPABASE INTEGRATION - Reserve Seats (su geresniu klaidų gaudymu)
-  const reserveSeats = useCallback(async (seatIds: string[]) => {
+  // SUPABASE INTEGRATION - Reserve Seats su kontaktais
+  const reserveSeats = useCallback(async (seatIds: string[], email: string, phone: string) => {
     setState(prev => ({ ...prev, isLoading: true }));
 
     try {
-      // 1. Atspausdiname konsolėje, ką tiksliai bandome išsiųsti
-      console.log("Bandoma rezervuoti šiuos vietų ID:", seatIds);
-
-      const { data, error } = await supabase.rpc('reserve_seats', {
+      const { error } = await supabase.rpc('reserve_seats', {
         seat_ids: seatIds,
+        email: email,
+        phone: phone
       });
 
-      // Jei Supabase grąžina klaidą, išmetame ją į catch bloką
-      if (error) {
-        throw error;
-      }
+      if (error) throw error;
 
       setState(prev => ({
         ...prev,
@@ -289,12 +286,8 @@ export function SeatingProvider({ children }: { children: React.ReactNode }) {
       alert('Sėkmingai rezervavote vietas!');
 
     } catch (error: any) {
-      // 2. Išpakuojame Supabase klaidą, kad Next.js jos nepaslėptų kaip {}
       console.error('Pilna klaidos informacija:', JSON.stringify(error, null, 2));
-      console.error('Klaidos žinutė:', error.message);
-      
-      alert(`Nepavyko rezervuoti. Klaida: ${error.message || 'Nežinoma klaida, pažiūrėkite konsolę.'}`);
-      
+      alert(`Nepavyko rezervuoti. Klaida: ${error.message || 'Nežinoma klaida.'}`);
       setState(prev => ({ ...prev, isLoading: false }));
     }
   }, []);

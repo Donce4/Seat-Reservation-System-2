@@ -17,15 +17,10 @@ export function CheckoutForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Reserve the seats
     const seatIds = selectedSeats.map(item => item.seat.id);
-    await reserveSeats(seatIds);
     
-    // Show success (in a real app, this would redirect to a confirmation page)
-    // alert('Užsakymas sėkmingai pateiktas!'); 
-    // Pastaba: alert jau yra iškviečiamas seating-context faile, todėl čia jo nebereikia, 
-    // kitaip gausi du iššokančius langus.
+    // Čia pridedame email ir phone perdavimą į kontekstą
+    await reserveSeats(seatIds, email, phone);
   };
 
   return (
