@@ -6,16 +6,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { ArrowLeft, CreditCard, Building2, Loader2 } from 'lucide-react';
+import { ArrowLeft, Loader2 } from 'lucide-react';
 
 export function CheckoutForm() {
   const { selectedSeats, getTotalPrice, setView, reserveSeats, isLoading } = useSeating();
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState<'credit_card' | 'bank_transfer'>('credit_card');
-  const [cardNumber, setCardNumber] = useState('');
-  const [cardDetails, setCardDetails] = useState('');
 
   const totalPrice = getTotalPrice();
 
@@ -27,7 +23,9 @@ export function CheckoutForm() {
     await reserveSeats(seatIds);
     
     // Show success (in a real app, this would redirect to a confirmation page)
-    alert('Užsakymas sėkmingai pateiktas!');
+    // alert('Užsakymas sėkmingai pateiktas!'); 
+    // Pastaba: alert jau yra iškviečiamas seating-context faile, todėl čia jo nebereikia, 
+    // kitaip gausi du iššokančius langus.
   };
 
   return (
@@ -72,67 +70,6 @@ export function CheckoutForm() {
                 required
               />
             </div>
-          </CardContent>
-        </Card>
-
-        {/* Payment method */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg font-bold">MOKĖJIMO BŪDAS</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <RadioGroup
-              value={paymentMethod}
-              onValueChange={(value) => setPaymentMethod(value as 'credit_card' | 'bank_transfer')}
-              className="flex gap-4"
-            >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="credit_card" id="credit_card" />
-                <Label htmlFor="credit_card" className="font-normal cursor-pointer flex items-center gap-1">
-                  <CreditCard className="h-4 w-4" />
-                  Credit Card
-                </Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="bank_transfer" id="bank_transfer" />
-                <Label htmlFor="bank_transfer" className="font-normal cursor-pointer flex items-center gap-1">
-                  <Building2 className="h-4 w-4" />
-                  Bank Transfer
-                </Label>
-              </div>
-            </RadioGroup>
-
-            {paymentMethod === 'credit_card' && (
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="card-number">Credit Card</Label>
-                  <Input
-                    id="card-number"
-                    placeholder="XXXX XXXX XXXX XXXX"
-                    value={cardNumber}
-                    onChange={(e) => setCardNumber(e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="card-details">Details</Label>
-                  <Input
-                    id="card-details"
-                    placeholder="MM/YY CVC"
-                    value={cardDetails}
-                    onChange={(e) => setCardDetails(e.target.value)}
-                  />
-                </div>
-              </div>
-            )}
-
-            {paymentMethod === 'bank_transfer' && (
-              <div className="p-4 bg-secondary rounded-xl text-sm">
-                <p className="font-bold mb-2">Banko pavedimo informacija:</p>
-                <p>Gavėjas: Arena Tickets UAB</p>
-                <p>Sąskaita: LT12 3456 7890 1234 5678</p>
-                <p>Bankas: SEB bankas</p>
-              </div>
-            )}
           </CardContent>
         </Card>
       </div>

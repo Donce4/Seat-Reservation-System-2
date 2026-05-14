@@ -1,5 +1,6 @@
 'use client';
 
+import { supabase } from './supabase';
 import React, { createContext, useContext, useState, useCallback, useMemo, useEffect } from 'react';
 import { Sector, Seat, CartItem, BestSeatCriteria } from './types';
 import { createInitialSectors } from './seat-data';
@@ -37,40 +38,122 @@ export function SeatingProvider({ children }: { children: React.ReactNode }) {
   });
 
   // Initialize sectors on mount
+  // Atnaujintas pradinio užkrovimo blokas su diagnostika
   useEffect(() => {
-    const initialSectors = createInitialSectors();
-    setState(prev => ({ ...prev, sectors: initialSectors }));
+    const fetchInitialSeats = async () => {
+      setState(prev => ({ ...prev, isLoading: true }));
+      
+      const { data: dbSeats, error } = await supabase.from('seats').select('id, status');
+      
+      if (error) {
+        console.error('❌ Supabase SELECT klaida:', error);
+        setState(prev => ({ ...prev, isLoading: false }));
+        return;
+      }
+
+      // DIAGNOSTIKA: Pažiūrėkime į naršyklės konsolę (F12)
+      console.log("📊 Gauti duomenys iš Supabase:", dbSeats);
+
+      if (!dbSeats || dbSeats.length === 0) {
+        console.warn("⚠️ DĖMESIO: Supabase grąžino 0 eilučių! Ar tikrai lentelė užpildyta?");
+      }
+
+      const dbStatusMap = new Map(dbSeats.map(seat => [seat.id, seat.status]));
+      const baseSectors = createInitialSectors();
+
+      const syncedSectors = baseSectors.map(sector => {
+        const syncedSeats = sector.seats.map(seat => {
+          const dbStatus = dbStatusMap.get(seat.id);
+          
+          // Jei ID nesutampa, čia pamatysime problemą
+          if (!dbStatus) {
+            // console.log(`Nerastas statusas vietai ID: ${seat.id}`);
+          }
+
+          return {
+            ...seat,
+            status: (dbStatus || 'available') as any
+          };
+        });
+
+        return {
+          ...sector,
+          seats: syncedSeats,
+          availableSeats: syncedSeats.filter(s => s.status === 'available').length
+        };
+      });
+
+      setState(prev => ({ 
+        ...prev, 
+        sectors: syncedSectors,
+        isLoading: false
+      }));
+    };
+
+    fetchInitialSeats();
   }, []);
 
-  /**
-   * SUPABASE INTEGRATION HOOK
-   * Replace this with your Supabase real-time subscription
-   * to update seat status live when other users book seats.
-   * 
-   * Example implementation:
-   * ```
-   * useEffect(() => {
-   *   const subscription = supabase
-   *     .channel('seats')
-   *     .on('postgres_changes', { event: '*', schema: 'public', table: 'seats' }, (payload) => {
-   *       // Update local state based on real-time changes
-   *       handleRealtimeUpdate(payload);
-   *     })
-   *     .subscribe();
-   *   
-   *   return () => subscription.unsubscribe();
-   * }, []);
-   * ```
-   */
+// SUPABASE INTEGRATION HOOK - Real-time seat updates
   const useLiveSeating = useCallback(() => {
-    // TODO: Implement Supabase real-time subscription here
-    // This function will be called to subscribe to live seat updates
-    console.log('[v0] useLiveSeating: Ready for Supabase real-time subscription');
+    const channel = supabase
+      .channel('public:seats')
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'seats' },
+        (payload) => {
+          const updatedSeat = payload.new;
+
+          setState(prev => {
+            const updatedSectors = prev.sectors.map(sector => {
+              if (sector.id !== updatedSeat.sector_id) return sector;
+
+              const newSeats = sector.seats.map(s => {
+                if (s.id === updatedSeat.id) {
+                  if (updatedSeat.status === 'booked') {
+                    return { ...s, status: 'booked' as const };
+                  }
+                  if (s.status !== 'selected') {
+                    return { ...s, status: updatedSeat.status as any };
+                  }
+                }
+                return s;
+              });
+
+              return {
+                ...sector,
+                seats: newSeats,
+                availableSeats: newSeats.filter(s => s.status === 'available').length,
+              };
+            });
+
+            const isSelectedSeatBooked = prev.selectedSeats.some(
+              item => item.seat.id === updatedSeat.id && updatedSeat.status === 'booked'
+            );
+
+            if (isSelectedSeatBooked) {
+              alert("Dėmesio! Viena iš jūsų pasirinktų vietų ką tik buvo nupirkta kito vartotojo.");
+            }
+
+            return {
+              ...prev,
+              sectors: updatedSectors,
+              selectedSeats: prev.selectedSeats.filter(
+                item => !(item.seat.id === updatedSeat.id && updatedSeat.status === 'booked')
+              )
+            };
+          });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
-  // Call the hook to set up live seating (when implemented)
   useEffect(() => {
-    useLiveSeating();
+    const cleanup = useLiveSeating();
+    return cleanup;
   }, [useLiveSeating]);
 
   const selectSeat = useCallback((seat: Seat, sectorName: string) => {
@@ -178,67 +261,42 @@ export function SeatingProvider({ children }: { children: React.ReactNode }) {
     setState(prev => ({ ...prev, view }));
   }, []);
 
-  /**
-   * SUPABASE INTEGRATION - Reserve Seats
-   * 
-   * This function currently updates local React state only.
-   * Replace the implementation with Supabase mutation and row-locking logic.
-   * 
-   * Example implementation:
-   * ```
-   * const reserveSeats = async (seatIds: string[]) => {
-   *   setState(prev => ({ ...prev, isLoading: true }));
-   *   
-   *   try {
-   *     // Start a transaction with row locking
-   *     const { data, error } = await supabase.rpc('reserve_seats', {
-   *       seat_ids: seatIds,
-   *       user_id: currentUser.id,
-   *     });
-   *     
-   *     if (error) throw error;
-   *     
-   *     // Update local state on success
-   *     // ... update sectors with booked status
-   *   } catch (error) {
-   *     // Handle error - seat might have been booked by someone else
-   *     console.error('Failed to reserve seats:', error);
-   *     throw error;
-   *   } finally {
-   *     setState(prev => ({ ...prev, isLoading: false }));
-   *   }
-   * };
-   * ```
-   */
+  // SUPABASE INTEGRATION - Reserve Seats
+  // SUPABASE INTEGRATION - Reserve Seats (su geresniu klaidų gaudymu)
   const reserveSeats = useCallback(async (seatIds: string[]) => {
     setState(prev => ({ ...prev, isLoading: true }));
 
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    try {
+      // 1. Atspausdiname konsolėje, ką tiksliai bandome išsiųsti
+      console.log("Bandoma rezervuoti šiuos vietų ID:", seatIds);
 
-    setState(prev => {
-      const seatIdSet = new Set(seatIds);
+      const { data, error } = await supabase.rpc('reserve_seats', {
+        seat_ids: seatIds,
+      });
 
-      const updatedSectors = prev.sectors.map(sector => ({
-        ...sector,
-        seats: sector.seats.map(s =>
-          seatIdSet.has(s.id) ? { ...s, status: 'booked' as const } : s
-        ),
-        availableSeats: sector.seats.filter(s => 
-          seatIdSet.has(s.id) ? false : s.status === 'available'
-        ).length,
-      }));
+      // Jei Supabase grąžina klaidą, išmetame ją į catch bloką
+      if (error) {
+        throw error;
+      }
 
-      return {
+      setState(prev => ({
         ...prev,
-        sectors: updatedSectors,
         selectedSeats: [],
         isLoading: false,
         view: 'arena',
-      };
-    });
+      }));
+      
+      alert('Sėkmingai rezervavote vietas!');
 
-    console.log('[v0] reserveSeats: Seats reserved locally. Ready for Supabase integration.');
+    } catch (error: any) {
+      // 2. Išpakuojame Supabase klaidą, kad Next.js jos nepaslėptų kaip {}
+      console.error('Pilna klaidos informacija:', JSON.stringify(error, null, 2));
+      console.error('Klaidos žinutė:', error.message);
+      
+      alert(`Nepavyko rezervuoti. Klaida: ${error.message || 'Nežinoma klaida, pažiūrėkite konsolę.'}`);
+      
+      setState(prev => ({ ...prev, isLoading: false }));
+    }
   }, []);
 
   /**
