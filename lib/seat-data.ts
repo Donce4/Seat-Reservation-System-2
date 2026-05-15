@@ -33,49 +33,87 @@ export function getAvailabilityLevel(availableSeats: number, totalSeats: number)
 // The court is centered at roughly 35-65% horizontally and 35-65% vertically
 export function createInitialSectors(): Sector[] {
   const sectorsConfig = [
-    // === LOWER TIER (100 Level) - Inner Ring ===
+    // === TOP SECTION (above court) ===
+    // Row 1 - top edge
+    { id: 1, name: '103', price: 72, position: { x: 12, y: 12, width: 5.5, height: 6 }, rows: 5, seatsPerRow: 8, bookedPct: 0.3 },
+    { id: 2, name: '103', price: 72, position: { x: 18, y: 12, width: 5.5, height: 6 }, rows: 5, seatsPerRow: 8, bookedPct: 0.5 },
+    { id: 3, name: '103', price: 72, position: { x: 24, y: 12, width: 5.5, height: 6 }, rows: 5, seatsPerRow: 8, bookedPct: 0.7 },
+    { id: 4, name: '103', price: 72, position: { x: 30, y: 12, width: 5.5, height: 6 }, rows: 5, seatsPerRow: 8, bookedPct: 0.8 },
+    { id: 5, name: '103', price: 72, position: { x: 36, y: 12, width: 5.5, height: 6 }, rows: 5, seatsPerRow: 8, bookedPct: 0.2 },
+    { id: 6, name: '101', price: 39, position: { x: 42, y: 12, width: 5.5, height: 6 }, rows: 5, seatsPerRow: 10, bookedPct: 0.5 },
+    { id: 7, name: '102', price: 39, position: { x: 48, y: 12, width: 5.5, height: 6 }, rows: 5, seatsPerRow: 10, bookedPct: 0.4 },
+    { id: 8, name: '103', price: 72, position: { x: 54, y: 12, width: 5.5, height: 6 }, rows: 5, seatsPerRow: 8, bookedPct: 0.6 },
+    { id: 9, name: '104', price: 149, position: { x: 60, y: 12, width: 5.5, height: 6 }, rows: 4, seatsPerRow: 6, bookedPct: 0.85 },
+    { id: 10, name: '103', price: 72, position: { x: 66, y: 12, width: 5.5, height: 6 }, rows: 5, seatsPerRow: 8, bookedPct: 0.3 },
+    { id: 11, name: '103', price: 72, position: { x: 72, y: 12, width: 5.5, height: 6 }, rows: 5, seatsPerRow: 8, bookedPct: 0.7 },
+    { id: 12, name: '103', price: 72, position: { x: 78, y: 12, width: 5.5, height: 6 }, rows: 5, seatsPerRow: 8, bookedPct: 0.2 },
     
-    // Bottom Side (Main TV View - 111 to 114 are center)
-    { id: 111, name: '111', price: 120, position: { x: 42, y: 68, width: 7, height: 8 }, rows: 12, seatsPerRow: 14, bookedPct: 0.8 },
-    { id: 112, name: '112', price: 150, position: { x: 50, y: 68, width: 7, height: 8 }, rows: 12, seatsPerRow: 14, bookedPct: 0.9 },
-    { id: 113, name: '113', price: 120, position: { x: 58, y: 68, width: 7, height: 8 }, rows: 12, seatsPerRow: 14, bookedPct: 0.7 },
+    // Row 2 - second from top
+    { id: 13, name: '103', price: 72, position: { x: 8, y: 20, width: 6, height: 6 }, rows: 5, seatsPerRow: 8, bookedPct: 0.4 },
+    { id: 14, name: '103', price: 72, position: { x: 16, y: 20, width: 8, height: 6 }, rows: 5, seatsPerRow: 10, bookedPct: 0.6 },
+    { id: 15, name: '103', price: 72, position: { x: 26, y: 20, width: 6, height: 6 }, rows: 5, seatsPerRow: 8, bookedPct: 0.8 },
+    { id: 16, name: '103', price: 72, position: { x: 34, y: 20, width: 6, height: 6 }, rows: 5, seatsPerRow: 8, bookedPct: 0.3 },
+    { id: 17, name: '101', price: 39, position: { x: 42, y: 20, width: 6, height: 6 }, rows: 5, seatsPerRow: 10, bookedPct: 0.5 },
+    { id: 18, name: '102', price: 39, position: { x: 50, y: 20, width: 6, height: 6 }, rows: 5, seatsPerRow: 10, bookedPct: 0.4 },
+    { id: 19, name: '103', price: 72, position: { x: 58, y: 20, width: 6, height: 6 }, rows: 5, seatsPerRow: 8, bookedPct: 0.7 },
+    { id: 20, name: '104', price: 149, position: { x: 66, y: 20, width: 6, height: 6 }, rows: 4, seatsPerRow: 6, bookedPct: 0.9 },
+    { id: 21, name: '103', price: 72, position: { x: 74, y: 20, width: 8, height: 6 }, rows: 5, seatsPerRow: 10, bookedPct: 0.2 },
+    { id: 22, name: '103', price: 72, position: { x: 84, y: 20, width: 6, height: 6 }, rows: 5, seatsPerRow: 8, bookedPct: 0.5 },
+
+    // === LEFT SIDE (beside court) ===
+    { id: 23, name: '103', price: 72, position: { x: 4, y: 28, width: 6, height: 6 }, rows: 6, seatsPerRow: 6, bookedPct: 0.3 },
+    { id: 24, name: '103', price: 72, position: { x: 4, y: 36, width: 6, height: 6 }, rows: 6, seatsPerRow: 6, bookedPct: 0.5 },
+    { id: 25, name: '103', price: 72, position: { x: 4, y: 44, width: 6, height: 6 }, rows: 6, seatsPerRow: 6, bookedPct: 0.7 },
+    { id: 26, name: '103', price: 72, position: { x: 4, y: 52, width: 6, height: 6 }, rows: 6, seatsPerRow: 6, bookedPct: 0.4 },
+    { id: 27, name: '103', price: 72, position: { x: 4, y: 60, width: 6, height: 6 }, rows: 6, seatsPerRow: 6, bookedPct: 0.2 },
     
-    // Top Side (Opposite Bench - 130 to 133 are center)
-    { id: 131, name: '131', price: 120, position: { x: 42, y: 24, width: 7, height: 8 }, rows: 12, seatsPerRow: 14, bookedPct: 0.6 },
-    { id: 132, name: '132', price: 150, position: { x: 50, y: 24, width: 7, height: 8 }, rows: 12, seatsPerRow: 14, bookedPct: 0.85 },
-    { id: 133, name: '133', price: 120, position: { x: 58, y: 24, width: 7, height: 8 }, rows: 12, seatsPerRow: 14, bookedPct: 0.5 },
+    // Second left column
+    { id: 28, name: '103', price: 72, position: { x: 12, y: 30, width: 6, height: 6 }, rows: 5, seatsPerRow: 6, bookedPct: 0.6 },
+    { id: 29, name: '103', price: 72, position: { x: 12, y: 38, width: 6, height: 6 }, rows: 5, seatsPerRow: 6, bookedPct: 0.8 },
+    { id: 30, name: '103', price: 72, position: { x: 12, y: 46, width: 6, height: 6 }, rows: 5, seatsPerRow: 6, bookedPct: 0.3 },
+    { id: 31, name: '103', price: 72, position: { x: 12, y: 54, width: 6, height: 6 }, rows: 5, seatsPerRow: 6, bookedPct: 0.9 },
+    { id: 32, name: '103', price: 72, position: { x: 12, y: 62, width: 6, height: 6 }, rows: 5, seatsPerRow: 6, bookedPct: 0.4 },
 
-    // Left End (Behind the basket - Green White Boys side)
-    { id: 121, name: '121', price: 45, position: { x: 15, y: 42, width: 8, height: 7 }, rows: 15, seatsPerRow: 12, bookedPct: 0.9 },
-    { id: 122, name: '122', price: 40, position: { x: 15, y: 50, width: 8, height: 7 }, rows: 15, seatsPerRow: 12, bookedPct: 0.95 },
-    { id: 123, name: '123', price: 45, position: { x: 15, y: 58, width: 8, height: 7 }, rows: 15, seatsPerRow: 12, bookedPct: 0.8 },
-
-    // Right End (Behind the basket)
-    { id: 102, name: '102', price: 45, position: { x: 85, y: 42, width: 8, height: 7 }, rows: 15, seatsPerRow: 12, bookedPct: 0.4 },
-    { id: 103, name: '103', price: 40, position: { x: 85, y: 50, width: 8, height: 7 }, rows: 15, seatsPerRow: 12, bookedPct: 0.3 },
-    { id: 104, name: '104', price: 45, position: { x: 85, y: 58, width: 8, height: 7 }, rows: 15, seatsPerRow: 12, bookedPct: 0.4 },
-
-    // === UPPER TIER (300 Level) - Outer Ring ===
+    // === RIGHT SIDE (beside court) ===
+    { id: 33, name: '103', price: 72, position: { x: 88, y: 28, width: 6, height: 6 }, rows: 6, seatsPerRow: 6, bookedPct: 0.5 },
+    { id: 34, name: '103', price: 72, position: { x: 88, y: 36, width: 6, height: 6 }, rows: 6, seatsPerRow: 6, bookedPct: 0.3 },
+    { id: 35, name: '103', price: 72, position: { x: 88, y: 44, width: 6, height: 6 }, rows: 6, seatsPerRow: 6, bookedPct: 0.8 },
+    { id: 36, name: '103', price: 72, position: { x: 88, y: 52, width: 6, height: 6 }, rows: 6, seatsPerRow: 6, bookedPct: 0.2 },
+    { id: 37, name: '103', price: 72, position: { x: 88, y: 60, width: 6, height: 6 }, rows: 6, seatsPerRow: 6, bookedPct: 0.6 },
     
-    // Top Edge (Cheaper seats)
-    { id: 338, name: '338', price: 25, position: { x: 35, y: 5, width: 6, height: 10 }, rows: 10, seatsPerRow: 20, bookedPct: 0.2 },
-    { id: 339, name: '339', price: 30, position: { x: 42, y: 5, width: 6, height: 10 }, rows: 10, seatsPerRow: 20, bookedPct: 0.4 },
-    { id: 340, name: '340', price: 35, position: { x: 50, y: 5, width: 6, height: 10 }, rows: 10, seatsPerRow: 20, bookedPct: 0.6 },
-    { id: 341, name: '341', price: 30, position: { x: 58, y: 5, width: 6, height: 10 }, rows: 10, seatsPerRow: 20, bookedPct: 0.4 },
-    { id: 342, name: '342', price: 25, position: { x: 65, y: 5, width: 6, height: 10 }, rows: 10, seatsPerRow: 20, bookedPct: 0.2 },
+    // Second right column
+    { id: 38, name: '103', price: 72, position: { x: 80, y: 30, width: 6, height: 6 }, rows: 5, seatsPerRow: 6, bookedPct: 0.4 },
+    { id: 39, name: '104', price: 149, position: { x: 80, y: 38, width: 6, height: 6 }, rows: 4, seatsPerRow: 5, bookedPct: 0.85 },
+    { id: 40, name: '103', price: 72, position: { x: 80, y: 46, width: 6, height: 6 }, rows: 5, seatsPerRow: 6, bookedPct: 0.7 },
+    { id: 41, name: '103', price: 72, position: { x: 80, y: 54, width: 6, height: 6 }, rows: 5, seatsPerRow: 6, bookedPct: 0.3 },
+    { id: 42, name: '103', price: 72, position: { x: 80, y: 62, width: 6, height: 6 }, rows: 5, seatsPerRow: 6, bookedPct: 0.5 },
 
-    // Bottom Edge
-    { id: 308, name: '308', price: 25, position: { x: 35, y: 85, width: 6, height: 10 }, rows: 10, seatsPerRow: 20, bookedPct: 0.1 },
-    { id: 309, name: '309', price: 30, position: { x: 42, y: 85, width: 6, height: 10 }, rows: 10, seatsPerRow: 20, bookedPct: 0.3 },
-    { id: 310, name: '310', price: 35, position: { x: 50, y: 85, width: 6, height: 10 }, rows: 10, seatsPerRow: 20, bookedPct: 0.5 },
-    { id: 311, name: '311', price: 30, position: { x: 58, y: 85, width: 6, height: 10 }, rows: 10, seatsPerRow: 20, bookedPct: 0.3 },
-    { id: 312, name: '312', price: 25, position: { x: 65, y: 85, width: 6, height: 10 }, rows: 10, seatsPerRow: 20, bookedPct: 0.1 },
+    // === BOTTOM SECTION (below court) ===
+    // Row 1 - first below court
+    { id: 43, name: '103', price: 72, position: { x: 8, y: 70, width: 6, height: 6 }, rows: 5, seatsPerRow: 8, bookedPct: 0.5 },
+    { id: 44, name: '103', price: 72, position: { x: 16, y: 70, width: 8, height: 6 }, rows: 5, seatsPerRow: 10, bookedPct: 0.3 },
+    { id: 45, name: '103', price: 72, position: { x: 26, y: 70, width: 6, height: 6 }, rows: 5, seatsPerRow: 8, bookedPct: 0.7 },
+    { id: 46, name: '103', price: 72, position: { x: 34, y: 70, width: 6, height: 6 }, rows: 5, seatsPerRow: 8, bookedPct: 0.2 },
+    { id: 47, name: '103', price: 72, position: { x: 42, y: 70, width: 6, height: 6 }, rows: 5, seatsPerRow: 8, bookedPct: 0.8 },
+    { id: 48, name: '103', price: 72, position: { x: 50, y: 70, width: 6, height: 6 }, rows: 5, seatsPerRow: 8, bookedPct: 0.4 },
+    { id: 49, name: '103', price: 72, position: { x: 58, y: 70, width: 6, height: 6 }, rows: 5, seatsPerRow: 8, bookedPct: 0.6 },
+    { id: 50, name: '103', price: 72, position: { x: 66, y: 70, width: 6, height: 6 }, rows: 5, seatsPerRow: 8, bookedPct: 0.3 },
+    { id: 51, name: '103', price: 72, position: { x: 74, y: 70, width: 8, height: 6 }, rows: 5, seatsPerRow: 10, bookedPct: 0.5 },
+    { id: 52, name: '103', price: 72, position: { x: 84, y: 70, width: 6, height: 6 }, rows: 5, seatsPerRow: 8, bookedPct: 0.7 },
 
-    // Corners (Examples)
-    { id: 118, name: '118', price: 70, position: { x: 22, y: 75, width: 7, height: 7 }, rows: 12, seatsPerRow: 10, bookedPct: 0.6 },
-    { id: 108, name: '108', price: 70, position: { x: 78, y: 75, width: 7, height: 7 }, rows: 12, seatsPerRow: 10, bookedPct: 0.5 },
-    { id: 126, name: '126', price: 70, position: { x: 22, y: 25, width: 7, height: 7 }, rows: 12, seatsPerRow: 10, bookedPct: 0.4 },
-    { id: 136, name: '136', price: 70, position: { x: 78, y: 25, width: 7, height: 7 }, rows: 12, seatsPerRow: 10, bookedPct: 0.3 },
+    // Row 2 - bottom edge
+    { id: 53, name: '103', price: 72, position: { x: 12, y: 78, width: 5.5, height: 6 }, rows: 5, seatsPerRow: 8, bookedPct: 0.4 },
+    { id: 54, name: '103', price: 72, position: { x: 18, y: 78, width: 5.5, height: 6 }, rows: 5, seatsPerRow: 8, bookedPct: 0.6 },
+    { id: 55, name: '103', price: 72, position: { x: 24, y: 78, width: 5.5, height: 6 }, rows: 5, seatsPerRow: 8, bookedPct: 0.8 },
+    { id: 56, name: '103', price: 72, position: { x: 30, y: 78, width: 5.5, height: 6 }, rows: 5, seatsPerRow: 8, bookedPct: 0.2 },
+    { id: 57, name: '103', price: 72, position: { x: 36, y: 78, width: 5.5, height: 6 }, rows: 5, seatsPerRow: 8, bookedPct: 0.5 },
+    { id: 58, name: '101', price: 39, position: { x: 42, y: 78, width: 5.5, height: 6 }, rows: 5, seatsPerRow: 10, bookedPct: 0.3 },
+    { id: 59, name: '102', price: 39, position: { x: 48, y: 78, width: 5.5, height: 6 }, rows: 5, seatsPerRow: 10, bookedPct: 0.4 },
+    { id: 60, name: '103', price: 72, position: { x: 54, y: 78, width: 5.5, height: 6 }, rows: 5, seatsPerRow: 8, bookedPct: 0.7 },
+    { id: 61, name: '104', price: 149, position: { x: 60, y: 78, width: 5.5, height: 6 }, rows: 4, seatsPerRow: 6, bookedPct: 0.9 },
+    { id: 62, name: '103', price: 72, position: { x: 66, y: 78, width: 5.5, height: 6 }, rows: 5, seatsPerRow: 8, bookedPct: 0.3 },
+    { id: 63, name: '103', price: 72, position: { x: 72, y: 78, width: 5.5, height: 6 }, rows: 5, seatsPerRow: 8, bookedPct: 0.5 },
+    { id: 64, name: '103', price: 72, position: { x: 78, y: 78, width: 5.5, height: 6 }, rows: 5, seatsPerRow: 8, bookedPct: 0.6 },
   ];
 
   return sectorsConfig.map(config => {
